@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Interactive synthetic Oura-style business intelligence dashboard by Luis Calderon Cruz.">
+<title>Oura BI — Interactive Demo | Luis Calderon</title>
+<style>
+:root{--paper:#f5f4ef;--ink:#183a33;--muted:#5e6d65;--line:#d4d9ce;--lime:#d9ee91;--white:#fffef9;--panel:#e9ede2;--blue:#83afbb}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);font:15px/1.6 Arial,Helvetica,sans-serif;color:var(--ink)}a{color:inherit}button,select{font:inherit;color:inherit}button,select{cursor:pointer}button:focus-visible,select:focus-visible{outline:3px solid #6c852b;outline-offset:3px}
+.container{max-width:1180px;margin:0 auto;padding:0 28px}.top{border-bottom:1px solid var(--line);padding:25px 0;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}.logo{font-size:15px;font-weight:700;letter-spacing:-.025em}.back{font-size:13px;text-underline-offset:5px}.eyebrow{font:11px Consolas,monospace;text-transform:uppercase;letter-spacing:.13em;color:#5e7547}.hero{padding:55px 0 24px}.hero h1{font-size:clamp(35px,5vw,58px);line-height:1.08;letter-spacing:-.055em;font-weight:500;margin:12px 0}.hero p{max-width:760px;color:var(--muted);margin:0}.notice{margin-top:22px;border-left:4px solid #769143;background:#e7eddc;padding:12px 16px;font-size:13px}.toolbar{display:flex;justify-content:space-between;align-items:end;gap:18px;flex-wrap:wrap;margin:30px 0 17px}.tabs{display:flex;flex-wrap:wrap;gap:5px}.tabs button{border:1px solid var(--line);padding:10px 15px;background:transparent;font-size:13px}.tabs button.active{background:var(--ink);color:white;border-color:var(--ink)}.filters{display:flex;gap:10px;flex-wrap:wrap}.filters label{font-size:11px;color:var(--muted);display:flex;gap:6px;align-items:center}.filters select{border:1px solid var(--line);background:var(--white);padding:10px 11px;font-size:13px}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:22px 0}.kpi{border:1px solid var(--line);background:var(--white);padding:21px;min-width:0}.kpi .value{font-size:clamp(28px,3.7vw,42px);letter-spacing:-.06em;line-height:1.1;font-weight:600}.kpi .label{font-size:11px;color:var(--muted);margin-top:9px}.kpi .context{font:10px Consolas,monospace;color:#668245;margin-top:10px}
+.panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;padding-bottom:20px}.panel{background:var(--white);border:1px solid var(--line);padding:25px;min-width:0}.panel.wide{grid-column:1/-1}.panel h2{font-size:21px;line-height:1.2;font-weight:500;margin:0 0 8px;letter-spacing:-.03em}.panel .sub{font-size:12px;color:var(--muted);margin:0 0 15px}.chart{width:100%;height:auto;min-height:175px;display:block}.legend{display:flex;gap:20px;font-size:12px;color:var(--muted);margin-top:12px}.legend span:before{content:"";display:inline-block;width:10px;height:10px;margin-right:7px;background:var(--ink)}.legend span.alt:before{background:var(--blue)}.table{border-collapse:collapse;width:100%;font-size:13px}.table th,.table td{border-bottom:1px solid var(--line);padding:10px 8px;text-align:left}.table th{font:10px Consolas,monospace;text-transform:uppercase;color:var(--muted)}.table td:last-child,.table th:last-child{text-align:right}.pill{display:inline-block;background:var(--lime);padding:2px 7px;font-size:11px}
+footer{border-top:1px solid var(--line);padding:22px 0 40px;font-size:12px;color:var(--muted)}.muted{color:var(--muted)}.story{font-size:14px;line-height:1.8;color:var(--muted)}.story b{color:var(--ink)}
+@media(max-width:760px){.container{padding:0 17px}.hero{padding-top:35px}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.panels{grid-template-columns:1fr}.panel.wide{grid-column:auto}.panel{padding:18px}.tabs button{flex:1}.filters{width:100%}}@media(max-width:420px){.kpi{padding:14px}.filters label{width:100%}.filters select{flex:1}.chart{min-height:140px}}
+</style>
+</head>
+<body>
+<div class="container">
+<header class="top"><div class="logo">LUIS CALDERON / BUSINESS INTELLIGENCE</div><a class="back" href="../../index.html#oura-bi">← Back to portfolio</a></header>
+<section class="hero">
+<div class="eyebrow">Interactive portfolio demonstration / 2026</div>
+<h1>Oura Ring — BI &amp;<br>time-series analytics.</h1>
+<p>Explore sleep, recovery, activity and signal quality as a four-page analytics experience. Select a reporting window and day type to see KPIs and charts recalculate.</p>
+<div class="notice"><strong>Public synthetic data only.</strong> Every observation on this page is generated for demonstration. This is a browser-based preview of the BI concepts, <strong>not</strong> an embedded Power BI report or a representation of anyone's actual health data.</div>
+</section>
+<div class="toolbar">
+<nav class="tabs" aria-label="Dashboard pages">
+<button type="button" class="active" data-tab="overview" aria-pressed="true">Executive overview</button>
+<button type="button" data-tab="sleep" aria-pressed="false">Sleep &amp; recovery</button>
+<button type="button" data-tab="activity" aria-pressed="false">Activity &amp; intraday</button>
+<button type="button" data-tab="quality" aria-pressed="false">Data quality</button>
+</nav>
+<div class="filters">
+<label>Period <select id="period"><option value="30">Last 30 days</option><option value="90" selected>Last 90 days</option><option value="180">Last 180 days</option></select></label>
+<label>Day type <select id="dayType"><option value="all">All days</option><option value="weekday">Weekdays</option><option value="weekend">Weekends</option></select></label>
+</div>
+</div>
+<div id="kpis" class="kpis" aria-live="polite"></div>
+<main id="panels" class="panels" aria-live="polite"></main>
+<footer>Designed as a privacy-safe interactive case-study preview. Data are seeded and synthetic, spanning January–June 2026. Power BI Desktop validation of the separate report is pending.</footer>
+</div>
+<script>
+(function(){
+"use strict";
+var seed=4072026;
+function random(){seed=(seed*1664525+1013904223)>>>0;return seed/4294967296}
+function clamp(v,a,b){return Math.min(b,Math.max(a,v))}
+var rows=[];
+for(var i=0;i<180;i++){
+ var d=new Date(Date.UTC(2026,0,2+i)),dow=d.getUTCDay(),weekend=(dow===0||dow===6);
+ var cyc=Math.sin(i/8),v=random()-.5;
+ var sleep=clamp(7.15+.68*cyc-.50*(weekend?0:1)+v*1.20,4.9,9.1);
+ var readiness=Math.round(clamp(76+(sleep-7)*8+Math.sin(i/13)*4+(random()-.5)*18,48,98));
+ var steps=Math.round(clamp(8450+(weekend?2200:0)+Math.sin(i/6)*1850+(random()-.5)*5300,2300,17200));
+ var hr=Math.round(clamp(66-(sleep-7)*2+(random()-.5)*10,52,82));
+ var coverage=i%23===0?0.72:i%17===0?0.84:i%41===0?0.62:1;
+ rows.push({date:d.toISOString().slice(0,10),dow:dow,weekend:weekend,sleep:+sleep.toFixed(1),readiness:readiness,steps:steps,hr:hr,coverage:coverage,stress:Math.round(clamp(35+(7-sleep)*7+(random()-.5)*23,8,80))});
+}
+var fmt=new Intl.NumberFormat("en-CA");
+var currentTab="overview";
+var elK=document.getElementById("kpis"),elP=document.getElementById("panels"),period=document.getElementById("period"),dayType=document.getElementById("dayType");
+function avg(a,k){return a.length?a.reduce(function(t,x){return t+x[k]},0)/a.length:0}
+function filtered(){var r=rows.slice(-Number(period.value));if(dayType.value==="weekday")r=r.filter(function(x){return !x.weekend});if(dayType.value==="weekend")r=r.filter(function(x){return x.weekend});return r}
+function num(v,d){return Number(v).toFixed(d===undefined?1:d)}
+function kpi(label,value,context){return '<article class="kpi"><div class="value">'+value+'</div><div class="label">'+label+'</div><div class="context">'+context+'</div></article>'}
+function line(data,keys,min,max){var W=710,H=235,p=42,iw=W-p-12,ih=H-2*p;var out='<svg class="chart" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Time-series trend chart">';for(var g=0;g<=4;g++){var gy=p+ih*g/4;out+='<line x1="'+p+'" y1="'+gy+'" x2="'+(W-12)+'" y2="'+gy+'" stroke="#dfe4d7"/><text x="4" y="'+(gy+4)+'" fill="#718076" font-size="12">'+num(max-(max-min)*g/4,0)+'</text>'}keys.forEach(function(key,idx){var pts=data.map(function(d,i){return (p+iw*i/Math.max(1,data.length-1)).toFixed(1)+','+(p+ih*(1-(d[key]-min)/(max-min))).toFixed(1)}).join(' ');out+='<polyline points="'+pts+'" fill="none" stroke="'+(idx?'#83afbb':'#183a33')+'" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>'});if(data.length){out+='<text x="'+p+'" y="'+(H-6)+'" fill="#718076" font-size="12">'+data[0].date.slice(5)+'</text><text x="'+(W-67)+'" y="'+(H-6)+'" fill="#718076" font-size="12">'+data[data.length-1].date.slice(5)+'</text>'}return out+'</svg>'}
+function bars(data,key,color){var W=710,H=225,p=40,iw=W-p-14,ih=H-p-32;var max=Math.max(1,...data.map(function(d){return d[key]}));var out='<svg class="chart" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Bar chart"><line x1="'+p+'" y1="'+(p+ih)+'" x2="'+(W-10)+'" y2="'+(p+ih)+'" stroke="#bac6b7"/>';data.forEach(function(d,i){var w=iw/data.length*0.67,x=p+(i+.16)*iw/data.length,h=ih*d[key]/max;out+='<rect x="'+num(x,1)+'" y="'+num(p+ih-h,1)+'" width="'+num(w,1)+'" height="'+num(h,1)+'" fill="'+color+'"><title>'+d.label+': '+num(d[key],0)+'</title></rect>';if(data.length<=14)out+='<text x="'+num(x,1)+'" y="'+(H-12)+'" fill="#718076" font-size="11">'+d.label+'</text>'});return out+'</svg>'}
+function scatter(data){var W=580,H=235,p=40,iw=W-70,ih=H-75;var s='<svg class="chart" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Scatter plot: sleep duration and readiness"><line x1="'+p+'" y1="'+(p+ih)+'" x2="'+(p+iw)+'" y2="'+(p+ih)+'" stroke="#aebfb1"/><line x1="'+p+'" y1="'+p+'" x2="'+p+'" y2="'+(p+ih)+'" stroke="#aebfb1"/>';data.forEach(function(d){var x=p+(d.sleep-4.5)/5*iw,y=p+(100-d.readiness)/55*ih;s+='<circle cx="'+num(x,1)+'" cy="'+num(y,1)+'" r="3.8" fill="#587c66" opacity=".65"><title>'+d.date+': '+d.sleep+' h / '+d.readiness+' readiness</title></circle>'});s+='<text x="'+(W/2-60)+'" y="'+(H-8)+'" font-size="12" fill="#718076">Sleep duration (hours)</text><text x="3" y="23" font-size="11" fill="#718076">Readiness ↑</text></svg>';return s}
+function panel(title,description,content,wide){return '<section class="panel'+(wide?' wide':'')+'"><h2>'+title+'</h2><p class="sub">'+description+'</p>'+content+'</section>'}
+function weekGroups(a){var o=[];for(var j=0;j<a.length;j+=7){var chunk=a.slice(j,j+7);o.push({label:'W'+(o.length+1),steps:avg(chunk,'steps'),stress:avg(chunk,'stress'),sleep:avg(chunk,'sleep')})}return o}
+function dailyHr(a){var base=a.length?a[a.length-1].hr:65;var o=[];for(var h=0;h<24;h++){var val=base+Math.sin((h-7)/24*Math.PI*2)*9+(h>=8&&h<=19?10:0)+Math.sin(h*2)*3;o.push({date:(h<10?'0':'')+h+':00',hr:Math.round(val)})}return o}
+function render(){
+ var r=filtered(),start=r[0],end=r[r.length-1],note=fmt.format(r.length)+' selected synthetic days';
+ elK.innerHTML=kpi('Average sleep',num(avg(r,'sleep'))+' h',note)+kpi('Average readiness',num(avg(r,'readiness'),0)+' / 100','Synthetic score')+kpi('Average daily steps',fmt.format(Math.round(avg(r,'steps'))),'Synthetic movement')+kpi('Data completeness',num(avg(r,'coverage')*100,1)+'%','Illustrative quality KPI');
+ var html='';
+ if(currentTab==='overview'){
+ html+=panel('Sleep and readiness trends','Daily observations; both series use a common index scale (0–100).',line(r.map(function(d){return{date:d.date,sleep:d.sleep*10,readiness:d.readiness}}),['sleep','readiness'],40,100)+'<div class="legend"><span>Sleep × 10</span><span class="alt">Readiness score</span></div>',true);
+ html+=panel('Weekly activity','Average daily step count for each sequential week in the selected filter.',bars(weekGroups(r),'steps','#183a33'));
+ html+=panel('How to read this dashboard','<span class="pill">Exploratory BI</span>','<div class="story">This prototype demonstrates <b>time-filtered metrics</b>, <b>cross-cutting report filters</b>, and <b>quality-aware KPIs</b>. Change the period or day-type selection above; the same filter context flows through each visual. All values are synthetic.</div>');
+ }else if(currentTab==='sleep'){
+ html+=panel('Sleep duration over time','Daily sleep hours; range 4.5–9.5 hours.',line(r,['sleep'],4.5,9.5),true);
+ html+=panel('Sleep versus readiness','Each dot is a synthetic day. Hover for values.',scatter(r));
+ html+=panel('Recovery indicators','Metrics recalculate under the same report filters.','<table class="table"><tbody><tr><th>Metric</th><th>Value</th></tr><tr><td>Average sleep</td><td>'+num(avg(r,'sleep'))+' h</td></tr><tr><td>Average resting HR</td><td>'+num(avg(r,'hr'),0)+' bpm</td></tr><tr><td>Average readiness</td><td>'+num(avg(r,'readiness'),0)+'/100</td></tr><tr><td>Sleep ≥ 7 hours</td><td>'+num(100*r.filter(function(x){return x.sleep>=7}).length/Math.max(r.length,1),0)+'%</td></tr></tbody></table>');
+ }else if(currentTab==='activity'){
+ html+=panel('Daily step trends','Daily steps under the selected reporting filters.',line(r,['steps'],0,20000),true);
+ html+=panel('Illustrative intraday heart rate','A synthetic 24-hour profile based on the last selected day. This is not a real sensor record.',line(dailyHr(r),['hr'],45,100));
+ html+=panel('Activity segments','Synthetic activity classification based on step thresholds.','<table class="table"><thead><tr><th>Daily steps</th><th>Days</th></tr></thead><tbody><tr><td>Low (&lt; 6,000)</td><td>'+r.filter(function(x){return x.steps<6000}).length+'</td></tr><tr><td>Moderate (6,000–10,000)</td><td>'+r.filter(function(x){return x.steps>=6000&&x.steps<=10000}).length+'</td></tr><tr><td>High (&gt; 10,000)</td><td>'+r.filter(function(x){return x.steps>10000}).length+'</td></tr></tbody></table>');
+ }else{
+ html+=panel('Data coverage over time','Daily simulated percentage of source-record completeness.',line(r.map(function(d){return{date:d.date,coverage:d.coverage*100}}),['coverage'],0,100),true);
+ html+=panel('Coverage quality checks','Portfolio demonstration of monitoring an analytical data pipeline.','<table class="table"><thead><tr><th>Check</th><th>Result</th></tr></thead><tbody><tr><td>Days in filter</td><td>'+r.length+'</td></tr><tr><td>Complete days</td><td>'+r.filter(function(x){return x.coverage===1}).length+'</td></tr><tr><td>Days with partial coverage</td><td>'+r.filter(function(x){return x.coverage<1}).length+'</td></tr><tr><td>Mean completeness</td><td>'+num(avg(r,'coverage')*100,1)+'%</td></tr></tbody></table>');
+ html+=panel('Model and methodology','A conceptual companion to the separate Power BI project.','<div class="story"><b>Grain:</b> Daily observations for sleep, readiness and activity; hourly records for intraday measures.<p><b>Dimensions:</b> Date, hour and metric type. <b>Facts:</b> Sleep, activity, heart-rate signals and coverage.</p><p><b>BI patterns:</b> Star-schema modeling, one-way filter relationships, time intelligence, aggregated KPIs, and explicit data-quality reporting.</p><p><b>Important:</b> This synthetic preview is not the underlying PBIP / Power BI Desktop model.</p></div>');
+ }
+ elP.innerHTML=html;
+}
+document.querySelectorAll('[data-tab]').forEach(function(btn){btn.addEventListener('click',function(){currentTab=btn.getAttribute('data-tab');document.querySelectorAll('[data-tab]').forEach(function(b){var active=b===btn;b.classList.toggle('active',active);b.setAttribute('aria-pressed',active?'true':'false')});render()})});
+period.addEventListener('change',render);dayType.addEventListener('change',render);render();
+})();
+</script>
+</body>
+</html>
